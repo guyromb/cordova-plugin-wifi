@@ -13,6 +13,7 @@ Using this plugin you can get information such as DNS, SSID, Gateway, IP Address
 The plugin creates the object `networkinterface` with the methods `getIPAddress(onSuccess, onError)` and `getNetworkInfo(onSuccess, onError)`.
 
 Example:
+```javascript
 	networkinterface.getIPAddress(
 		function (ip) {
 			alert(ip); 
@@ -21,11 +22,13 @@ Example:
 			alert(err); 
 		}
 	);
-	
+```
+
 Ionic Example:
 
 The library is automatically injected - it is ready to use after installation.
 Factory service implementation example:
+```javascript
 	.factory('wifiInfo', ['$q', function ($q) {
 		var service = {
 			info: {},
@@ -52,8 +55,9 @@ Factory service implementation example:
 			return null;
 		}
 	}])
-	
+```
 In the controller:
+```javascript
 	wifiInfo.getInfo().then(
 		function(info) {
 			if(wifiInfo.isConnected()) {
@@ -64,3 +68,4 @@ In the controller:
 			console.log(err);
 		}
 	);
+```
