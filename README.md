@@ -1,4 +1,4 @@
-Network Interface
+Wi-Fi Network Interface Information Plugin
 =================
 
 Wifi Network interface information plugin for Cordova that supports Android and iOS (=currently partially).
