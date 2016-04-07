@@ -1,7 +1,8 @@
 Network Interface
 =================
 
-Wifi Network interface information plugin for Cordova that supports Android and iOS
+Wifi Network interface information plugin for Cordova that supports Android and iOS (=currently partially).
+Using this plugin you can get information such as DNS, SSID, Gateway, IP Address, MAC Address etc.
 
 ## Command Line Install
 
@@ -9,30 +10,59 @@ Wifi Network interface information plugin for Cordova that supports Android and 
 
 ## Usage
 
-The plugin creates the object `networkinterface` with the methods `getIPAddress(onSuccess, onError)`.
+The plugin creates the object `networkinterface` with the methods `getIPAddress(onSuccess, onError)` and `getNetworkInfo(onSuccess, onError)`.
 
 Example:
+	networkinterface.getIPAddress(
+		function (ip) {
+			alert(ip); 
+		},
+		function (err) {
+			alert(err); 
+		}
+	);
+	
+Ionic Example:
 
-	networkinterface.getIPAddress(function (ip) { alert(ip); });
+The library is automatically injected - it is ready to use after installation.
+Factory service implementation example:
+	.factory('wifiInfo', ['$q', function ($q) {
+		var service = {
+			info: {},
+			getInfo: getInfo,
+			isConnected: isConnected
+		};
+		return service;
 
-## License
+		function getInfo() {
+			var def = $q.defer();
+			if(!window.networkinterface) {
+				def.reject("cannot access wifi interface");
+			}
+			else {
+				window.networkinterface.getNetworkInfo(function (data) {
+					service.info = data;
+					def.resolve(data);
+				});
+			}
+			return def.promise;
+		}
 
-The MIT License (MIT)
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in
-all copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-THE SOFTWARE.
+		function isConnected() {
+			if(service.info)
+				return (service.info.dns1 != '0.0.0.0');
+			return null;
+		}
+	}])
+	
+In the controller:
+	wifiInfo.getInfo().then(
+		function(info) {
+			if(wifiInfo.isConnected()) {
+				console.log(info);
+			}
+		},
+		function(err) {
+			console.log(err);
+		}
+	);
