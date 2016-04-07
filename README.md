@@ -1,17 +1,11 @@
 Network Interface
 =================
 
-Network interface information plugin for Cordova/PhoneGap that supports Android, Blackberry 10, iOS, and Windows Phone 8.
-
-## PhoneGap Build
-
-To include the Network Interface plugin in your PhoneGap Build application, add this to your config.xml:
-
-    <gap:plugin name="cordova-plugin-networkinterface" source="npm" />
+Wifi Network interface information plugin for Cordova that supports Android and iOS
 
 ## Command Line Install
 
-    cordova plugin add cordova-plugin-networkinterface
+    cordova plugin add https://github.com/guyromb/cordova-plugin-wifi.git
 
 ## Usage
 
@@ -42,4 +36,3 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
-"# cordova-plugin-wifi" 

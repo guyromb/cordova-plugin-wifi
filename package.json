@@ -1,19 +1,17 @@
 {
-  "name": "cordova-plugin-networkinterface",
+  "name": "cordova-plugin-wifi",
   "version": "1.0.8",
-  "description": "This plugin allows your application to retrieve the local wifi address.",
+  "description": "This plugin allows your application to retrieve the local wifi address information.",
   "cordova": {
-    "id": "cordova-plugin-networkinterface",
+    "id": "cordova-plugin-wifi",
     "platforms": [
       "ios",
       "android",
-      "wp8",
-      "blackberry10"
     ]
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/salbahra/cordova-plugin-networkinterface.git"
+    "url": "git+https://github.com/guyromb/cordova-plugin-wifi.git"
   },
   "keywords": [
     "local",
@@ -22,9 +20,7 @@
     "network",
     "ecosystem:cordova",
     "cordova-ios",
-    "cordova-android",
-    "cordova-wp8",
-    "cordova-blackberry10"
+    "cordova-android"
   ],
   "engines": [
     {
@@ -32,10 +28,10 @@
       "version": ">=3.1.0"
     }
   ],
-  "author": "Samer Albahra",
+  "author": "Guy Rombaut",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/salbahra/cordova-plugin-networkinterface/issues"
+    "url": "https://github.com/guyromb/cordova-plugin-wifi/issues"
   },
-  "homepage": "https://github.com/salbahra/cordova-plugin-networkinterface#readme"
+  "homepage": "https://github.com/guyromb/cordova-plugin-wifi#readme"
 }
