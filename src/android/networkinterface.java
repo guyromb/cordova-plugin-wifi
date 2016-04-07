@@ -1,4 +1,4 @@
-package com.albahra.plugin.networkinterface;
+package net.gsrweb.plugin.networkinterface;
 
 import org.apache.cordova.CordovaPlugin;
 import org.apache.cordova.CallbackContext;
