@@ -83,6 +83,20 @@ int getdefaultgateway(in_addr_t * addr)
 	}
 }
 
+- (void) getNetworkInfo:(CDVInvokedUrlCommand*)command
+{
+    CDVPluginResult* pluginResult = nil;
+    NSString* ipaddr = [self getGateway];
+
+    if (ipaddr != nil && ![ipaddr isEqualToString:@"error"]) {
+        pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsString:ipaddr];
+    } else {
+        pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR];
+    }
+
+    [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
+}
+
 - (NSString *)getIP {
 
     NSString *address = @"error";
@@ -243,11 +257,6 @@ int getdefaultgateway(in_addr_t * addr)
     
     [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
     
-}
-
-- (void) getNetworkInfo:(CDVInvokedUrlCommand*)command
-{
-
 }
 
 @end
