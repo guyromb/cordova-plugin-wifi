@@ -69,7 +69,7 @@
         }
         free(buf);
     }
-    return r;
+    return [NSString stringWithFormat:@"%i", r];;
 }
 
 - (NSString *)getIP {
