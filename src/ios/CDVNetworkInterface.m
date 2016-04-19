@@ -6,8 +6,71 @@
 #include <arpa/inet.h>
 #include <net/if.h>
 #include <net/if_dl.h>
+#include "route.h"
+#include <string.h>
+#include <stdlib.h>
+#include <stdio.h>
+#include <netinet/in.h>
+
+#define CTL_NET 4 /* network, see socket.h */
+
+#define ROUNDUP(a) \
+((a) > 0 ? (1 + (((a) - 1) | (sizeof(long) - 1))) : sizeof(long))
 
 @implementation CDVNetworkInterface
+
+- (NSString *) getGateway
+{
+    int mib[] = {CTL_NET, PF_ROUTE, 0, AF_INET,
+        NET_RT_FLAGS, RTF_GATEWAY};
+    size_t l;
+    char * buf, * p;
+    struct rt_msghdr * rt;
+    struct sockaddr * sa;
+    struct sockaddr * sa_tab[RTAX_MAX];
+    int i;
+    int r = -1;
+    if(sysctl(mib, sizeof(mib)/sizeof(int), 0, &l, 0, 0) < 0) {
+        return -1;
+    }
+    if(l>0) {
+        buf = malloc(l);
+        if(sysctl(mib, sizeof(mib)/sizeof(int), buf, &l, 0, 0) < 0) {
+            return -1;
+        }
+        for(p=buf; p<buf+l; p+=rt->rtm_msglen) {
+            rt = (struct rt_msghdr *)p;
+            sa = (struct sockaddr *)(rt + 1);
+            for(i=0; i<RTAX_MAX; i++) {
+                if(rt->rtm_addrs & (1 << i)) {
+                    sa_tab[i] = sa;
+                    sa = (struct sockaddr *)((char *)sa + ROUNDUP(sa->sa_len));
+                } else {
+                    sa_tab[i] = NULL;
+                }
+            }
+
+            if( ((rt->rtm_addrs & (RTA_DST|RTA_GATEWAY)) == (RTA_DST|RTA_GATEWAY))
+               && sa_tab[RTAX_DST]->sa_family == AF_INET
+               && sa_tab[RTAX_GATEWAY]->sa_family == AF_INET) {
+
+
+                if(((struct sockaddr_in *)sa_tab[RTAX_DST])->sin_addr.s_addr == 0) {
+                        char ifName[128];
+                        if_indextoname(rt->rtm_index,ifName);
+
+                        if(strcmp("en0",ifName)==0){
+
+                                *addr = ((struct sockaddr_in *)(sa_tab[RTAX_GATEWAY]))->sin_addr.s_addr;
+                                r = 0;                        
+                        }
+                }
+            }
+        }
+        free(buf);
+    }
+    return r;
+}
 
 - (NSString *)getIP {
 
@@ -40,6 +103,19 @@
 
 }
 
+- (id)fetchSSIDInfo {
+    // see http://stackoverflow.com/a/5198968/907720
+    NSArray *ifs = (__bridge_transfer NSArray *)CNCopySupportedInterfaces();
+    NSLog(@"Supported interfaces: %@", ifs);
+    NSDictionary *info;
+    for (NSString *ifnam in ifs) {
+        info = (__bridge_transfer NSDictionary *)CNCopyCurrentNetworkInfo((__bridge CFStringRef)ifnam);
+        NSLog(@"%@ => %@", ifnam, info);
+        if (info && [info count]) { break; }
+    }
+    return info;
+}
+
 - (void) getIPAddress:(CDVInvokedUrlCommand*)command
 {
     CDVPluginResult* pluginResult = nil;
@@ -52,6 +128,41 @@
     }
 
     [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
+}
+
+- (void)getConnectedSSID:(CDVInvokedUrlCommand*)command {
+    CDVPluginResult *pluginResult = nil;
+    NSDictionary *r = [self fetchSSIDInfo];
+
+    NSString *ssid = [r objectForKey:(id)kCNNetworkInfoKeySSID]; //@"SSID"
+
+    if (ssid && [ssid length]) {
+        pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsString:ssid];
+    } else {
+        pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR messageAsString:@"Not available"];
+    }
+
+    [self.commandDelegate sendPluginResult:pluginResult
+                                callbackId:command.callbackId];
+}
+
+- (void)getConnectedBSSID:(CDVInvokedUrlCommand*)command {
+    CDVPluginResult *pluginResult = nil;
+    NSDictionary *r = [self fetchSSIDInfo];
+    
+    NSString *bssid = [r objectForKey:(id)kCNNetworkInfoKeyBSSID]; //@"SSID"
+    
+    if (bssid && [bssid length]) {
+        pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsString:bssid];
+    } else {
+        pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR messageAsString:@"Not available"];
+    }
+    
+    [self.commandDelegate sendPluginResult:pluginResult
+                                callbackId:command.callbackId];
+}
+- (void)isWifiEnabled:(CDVInvokedUrlCommand*)command {
+    
 }
 
 - (void)getMacAddress:(CDVInvokedUrlCommand*)command {
