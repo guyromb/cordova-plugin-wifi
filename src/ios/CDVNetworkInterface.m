@@ -2,6 +2,8 @@
 #import <SystemConfiguration/CaptiveNetwork.h>
 #include <sys/socket.h>
 #include <sys/sysctl.h>
+#include <ifaddrs.h> 
+#include <arpa/inet.h>
 #include <net/if.h>
 #include <net/if_dl.h>
 
