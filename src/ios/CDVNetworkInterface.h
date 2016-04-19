@@ -1,10 +1,9 @@
-#import <Cordova/CDVPlugin.h>
-#import <Cordova/CDVInvokedUrlCommand.h>
-#include <ifaddrs.h>
-#include <arpa/inet.h>
+#import <Cordova/CDV.h>
 
 @interface CDVNetworkInterface : CDVPlugin
 
 - (void) getIPAddress:(CDVInvokedUrlCommand*)command;
+- (void) getNetworkInfo:(CDVInvokedUrlCommand*)command;
+- (void) getMacAddress:(CDVInvokedUrlCommand*)command;
 
 @end
