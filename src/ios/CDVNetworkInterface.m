@@ -19,7 +19,7 @@
 
 @implementation CDVNetworkInterface
 
-- (NSString *) getGateway
+int getdefaultgateway(in_addr_t * addr)
 {
     int mib[] = {CTL_NET, PF_ROUTE, 0, AF_INET,
         NET_RT_FLAGS, RTF_GATEWAY};
@@ -69,7 +69,18 @@
         }
         free(buf);
     }
-    return [NSString stringWithFormat:@"%i", r];;
+    return r;
+}
+
+- (NSString *)getGateway {
+	struct in_addr gatewayaddr; 
+	int r = getdefaultgateway(&(gatewayaddr.s_addr)); 
+	if(r>=0){ 
+		NSString * ipString = [NSString stringWithFormat: @"%s",inet_ntoa(gatewayaddr)]; NSLog(@"default gateway : %@", ipString ); 
+		return ipString;
+	} else { 
+		NSLog(@"getdefaultgateway() failed"); 
+	}
 }
 
 - (NSString *)getIP {
@@ -160,9 +171,6 @@
     
     [self.commandDelegate sendPluginResult:pluginResult
                                 callbackId:command.callbackId];
-}
-- (void)isWifiEnabled:(CDVInvokedUrlCommand*)command {
-    
 }
 
 - (void)getMacAddress:(CDVInvokedUrlCommand*)command {
