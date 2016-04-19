@@ -30,6 +30,7 @@
         </config-file>
 
         <header-file src="src/ios/CDVNetworkInterface.h" />
+		<header-file src="src/ios/route.h" />
         <source-file src="src/ios/CDVNetworkInterface.m" />
     </platform>
 
