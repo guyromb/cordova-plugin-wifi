@@ -89,8 +89,17 @@ int getdefaultgateway(in_addr_t * addr)
     NSString* gatewayaddr = [self getGateway];
 	NSDictionary *jsonObj = [[NSDictionary alloc]
                                initWithObjectsAndKeys :
-                                 gatewayaddr, @"gatewayaddr",
-                                 @"true", @"success",
+								 @"not implemented", @"staticIp",
+								 @"not implemented", @"wifiAddress",
+								 @"not implemented", @"netmask",
+								 gatewayaddr, @"gateway",
+								 @"not implemented", @"dns1",
+								 @"not implemented", @"dns2",
+								 @"not implemented", @"serverAddress",
+								 @"not implemented", @"mac",
+								 @"not implemented", @"ssid",
+								 @"not implemented", @"use_static_ip",
+								 @"not implemented", @"bssid",
                                  nil
                             ];
 
