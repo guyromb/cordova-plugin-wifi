@@ -86,10 +86,16 @@ int getdefaultgateway(in_addr_t * addr)
 - (void) getNetworkInfo:(CDVInvokedUrlCommand*)command
 {
     CDVPluginResult* pluginResult = nil;
-    NSString* ipaddr = [self getGateway];
+    NSString* gatewayaddr = [self getGateway];
+	NSDictionary *jsonObj = [[NSDictionary alloc]
+                               initWithObjectsAndKeys :
+                                 gatewayaddr, @"gatewayaddr",
+                                 @"true", @"success",
+                                 nil
+                            ];
 
-    if (ipaddr != nil && ![ipaddr isEqualToString:@"error"]) {
-        pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsString:ipaddr];
+    if (gatewayaddr != nil && ![gatewayaddr isEqualToString:@"error"]) {
+        pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsDictionary:jsonObj];
     } else {
         pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR];
     }
