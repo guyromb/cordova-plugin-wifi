@@ -40,8 +40,7 @@ Factory service implementation example:
 		var def = $q.defer();
 		if(!window.networkinterface) {
 			def.reject("cannot access wifi interface");
-		}
-		else {
+		} else {
 			window.networkinterface.getNetworkInfo(function (data) {
 				service.info = data;
 				def.resolve(data);
@@ -50,8 +49,9 @@ Factory service implementation example:
 		return def.promise;
 	}
 	function isConnected() {
-		if(service.info)
+		if(service.info) {
 			return (service.info.dns1 != '0.0.0.0');
+		}
 		return null;
 	}
 }])
