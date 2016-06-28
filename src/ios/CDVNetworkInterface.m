@@ -1,4 +1,5 @@
 #import "CDVNetworkInterface.h"
+#import "route.h"
 #import <SystemConfiguration/CaptiveNetwork.h>
 #include <sys/socket.h>
 #include <sys/sysctl.h>
@@ -6,8 +7,6 @@
 #include <arpa/inet.h>
 #include <net/if.h>
 #include <net/if_dl.h>
-// #include "route.h"
-// #include <route.h>
 #include <string.h>
 #include <stdlib.h>
 #include <stdio.h>
