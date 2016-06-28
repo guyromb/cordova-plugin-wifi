@@ -2,11 +2,12 @@
 #import <SystemConfiguration/CaptiveNetwork.h>
 #include <sys/socket.h>
 #include <sys/sysctl.h>
-#include <ifaddrs.h> 
+#include <ifaddrs.h>
 #include <arpa/inet.h>
 #include <net/if.h>
 #include <net/if_dl.h>
-#include "route.h"
+// #include "route.h"
+#include <route.h>
 #include <string.h>
 #include <stdlib.h>
 #include <stdio.h>
@@ -62,7 +63,7 @@ int getdefaultgateway(in_addr_t * addr)
                         if(strcmp("en0",ifName)==0){
 
                                 *addr = ((struct sockaddr_in *)(sa_tab[RTAX_GATEWAY]))->sin_addr.s_addr;
-                                r = 0;                        
+                                r = 0;
                         }
                 }
             }
@@ -73,13 +74,13 @@ int getdefaultgateway(in_addr_t * addr)
 }
 
 - (NSString *)getGateway {
-	struct in_addr gatewayaddr; 
-	int r = getdefaultgateway(&(gatewayaddr.s_addr)); 
-	if(r>=0){ 
-		NSString * ipString = [NSString stringWithFormat: @"%s",inet_ntoa(gatewayaddr)]; NSLog(@"default gateway : %@", ipString ); 
+	struct in_addr gatewayaddr;
+	int r = getdefaultgateway(&(gatewayaddr.s_addr));
+	if(r>=0){
+		NSString * ipString = [NSString stringWithFormat: @"%s",inet_ntoa(gatewayaddr)]; NSLog(@"default gateway : %@", ipString );
 		return ipString;
-	} else { 
-		NSLog(@"getdefaultgateway() failed"); 
+	} else {
+		NSLog(@"getdefaultgateway() failed");
 	}
 }
 
@@ -189,23 +190,23 @@ int getdefaultgateway(in_addr_t * addr)
 - (void)getConnectedBSSID:(CDVInvokedUrlCommand*)command {
     CDVPluginResult *pluginResult = nil;
     NSDictionary *r = [self fetchSSIDInfo];
-    
+
     NSString *bssid = [r objectForKey:(id)kCNNetworkInfoKeyBSSID]; //@"SSID"
-    
+
     if (bssid && [bssid length]) {
         pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsString:bssid];
     } else {
         pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR messageAsString:@"Not available"];
     }
-    
+
     [self.commandDelegate sendPluginResult:pluginResult
                                 callbackId:command.callbackId];
 }
 
 - (void)getMacAddress:(CDVInvokedUrlCommand*)command {
-    
+
     CDVPluginResult* pluginResult = nil;
-    
+
     int                 mgmtInfoBase[6];
     char                *msgBuffer = NULL;
     size_t              length;
@@ -213,14 +214,14 @@ int getdefaultgateway(in_addr_t * addr)
     struct if_msghdr    *interfaceMsgStruct;
     struct sockaddr_dl  *socketStruct;
     NSString            *errorFlag = NULL;
-    
+
     // Setup the management Information Base (mib)
     mgmtInfoBase[0] = CTL_NET;        // Request network subsystem
     mgmtInfoBase[1] = AF_ROUTE;       // Routing table info
     mgmtInfoBase[2] = 0;
     mgmtInfoBase[3] = AF_LINK;        // Request link layer information
     mgmtInfoBase[4] = NET_RT_IFLIST;  // Request all configured interfaces
-    
+
     // With all configured interfaces requested, get handle index
     if ((mgmtInfoBase[5] = if_nametoindex("en0")) == 0)
         errorFlag = @"if_nametoindex failure";
@@ -242,7 +243,7 @@ int getdefaultgateway(in_addr_t * addr)
             }
         }
     }
-    
+
     // Befor going any further...
     if (errorFlag != NULL)
     {
@@ -251,27 +252,27 @@ int getdefaultgateway(in_addr_t * addr)
     } else {
         // Map msgbuffer to interface message structure
         interfaceMsgStruct = (struct if_msghdr *) msgBuffer;
-        
+
         // Map to link-level socket structure
         socketStruct = (struct sockaddr_dl *) (interfaceMsgStruct + 1);
-        
+
         // Copy link layer address data in socket structure to an array
         memcpy(&macAddress, socketStruct->sdl_data + socketStruct->sdl_nlen, 6);
-        
+
         // Read from char array into a string object, into traditional Mac address format
         NSString *macAddressString = [NSString stringWithFormat:@"%02X:%02X:%02X:%02X:%02X:%02X",
                                       macAddress[0], macAddress[1], macAddress[2],
                                       macAddress[3], macAddress[4], macAddress[5]];
         //NSLog(@"Mac Address: %@", macAddressString);
-        
+
         // Release the buffer memory
         free(msgBuffer);
         pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsString:macAddressString];
 
     }
-    
+
     [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
-    
+
 }
 
 @end
