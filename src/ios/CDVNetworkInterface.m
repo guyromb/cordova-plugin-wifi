@@ -73,14 +73,16 @@ int getdefaultgateway(in_addr_t * addr)
 }
 
 - (NSString *)getGateway {
-	struct in_addr gatewayaddr;
-	int r = getdefaultgateway(&(gatewayaddr.s_addr));
-	if(r>=0){
-		NSString * ipString = [NSString stringWithFormat: @"%s",inet_ntoa(gatewayaddr)]; NSLog(@"default gateway : %@", ipString );
-		return ipString;
-	} else {
-		NSLog(@"getdefaultgateway() failed");
-	}
+    struct in_addr gatewayaddr;
+    //int r = getdefaultgateway(&(gatewayaddr.s_addr));
+    int r = 0;
+    if(r>=0){
+        //NSString * ipString = [NSString stringWithFormat: @"%s",inet_ntoa(gatewayaddr)]; NSLog(@"default gateway : %@", ipString );
+        NSString * ipString = @"1.1.1.1";
+        return ipString;
+    } else {
+        NSLog(@"getdefaultgateway() failed");
+    }
 }
 
 - (void) getNetworkInfo:(CDVInvokedUrlCommand*)command
